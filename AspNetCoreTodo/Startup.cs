@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AspNetCoreTodo.Data;
+using AspNetCoreTodo.Services;
+using AspNetCoreTodo.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -37,8 +39,12 @@ namespace AspNetCoreTodo
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                            .AddEntityFrameworkStores<ApplicationDbContext>()
+                            .AddDefaultTokenProviders();
+            services.AddAuthentication();
+
+            services.AddScoped<ITodoItemService, TodoItemService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
